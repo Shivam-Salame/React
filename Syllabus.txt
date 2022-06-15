@@ -1,0 +1,276 @@
+Creating React App
+    // npm package runner
+    npx create-react-app projectName
+
+    // this will create package globally and then use the package to generate 
+    npm install create-react-app -g
+    create-react-app projectName
+
+Folder Structure
+
+Components (Building BLocks of any React application)
+    Main id root(inside html)
+    we are nesting components to it( Header, sideNav, MainContent, Footer) 
+    components are reusable(it can be use in angular or view with same code, with just a little modification)
+
+    2 types of components are present in react
+        stateless Functional Component (js Function which return html which describes UI )
+        statefull Class Component( class extending component class return method returning HTML)
+
+    Functional Component : (receives properties[props] ) in js function result the HTML(jsx)
+        create one -> import react
+                      then define function
+                      export it
+                      import in app.js and it can be use as a tag in HTML(suppose a function Greet  in app.js <Greet>)
+
+    Exporting : named (same name while importing)
+                default (any name can be used)
+
+    Class Component : (receives properties[props] ) in js function result the HTML(jsx)
+                       can also maintain private internal state(to describe the UI)
+    
+Hooks :let you use state without writing class 
+        import { useState } from 'react';
+
+JSX : javascrippt xml - (Extension to js syntax)
+        write xml like code for elements and components;
+        jsx tags have a tag name, attributes, and children;
+        jsx is not a necessicity to wite react applications
+        jsx makes your react code simpler and elegant
+        jsx ultimately transpiles to pure js which is understood by the browsers
+
+
+        to use html elements without jsx use createElement from react library
+
+        and in react : class-> className
+                        for-> htmlFor
+
+             camelCass : onclick-> onclick
+
+props : attribute to component(props are immutable)
+        functional component example: <Greet name="shivam" age="22">
+            can be accesed in Greet component by passing props(object) as a parameter in fucntion and can be accessed by {props.name} inside html
+
+        <Greet> 
+        <p>shivam</p>
+        </Greet>
+
+        p can be accessed by {props.children}
+
+        class component example :
+            <Welcome name"shivam">
+
+            can be accessed by {this.props.name}
+
+state : 
+        inside class create constructor and call super()
+        
+        class App extends Component{
+
+        
+        constructor(){
+            super()
+            this.state = {
+                message = "hello shivam";
+            }
+        }
+
+        // this will change the msg which is a state
+        changeState(){
+            // accepts an object which is new state
+            this.setState ({
+               message =  "You fool";// will be set to message(key)
+            }) 
+        }
+
+        render() {
+            return (
+                <h1>{this.state.message}</h1>
+                <button onClick={ () => this.changeState() }>subscribe</button>
+            )
+        }
+
+        }
+
+Set State : <button onClick={ () => this.increment() }Increment </button>
+        the only place where we can assign this.state is constructor otherwise it will not reflect in UI
+        increment(){
+            this.state.count += 1
+            log(this.state.count) ; log correctly but but dont reflect in UI
+        }
+
+        increment(){
+            this.setState({ // this reflect in UI
+                count : this.state.count + 1 
+            })
+            log(this.state.count) // this results 0(count-1)
+            never modify state directly make use of setState(it know the react to reRender the component
+        }
+
+        increment(){
+            this.setState({ 
+                    count : this.state.count + 1 
+                }, () => {
+                    log(this.state.count)  // 1
+                })
+        }
+
+        IncrementFive(){ // this will call  increment 5 times( and log 0 five times in console)
+            this.increment(); // all calls done in one single go
+            this.increment(); // updated value doesn't carry over different calls 
+            this.increment(); // whenever you have to update the previous state 
+            this.increment();
+            this.increment();
+        }   
+
+        so now the increment() for above to work , pass in callback fn rather than object
+        increment(){
+            this.setState( (prevState ,props) => ({ we can pass 2nd parameter as props
+                    count : prevState.count + 1 
+            }))
+            log(this.state.count); // results prevValue
+                
+        }
+
+
+
+        
+Destructuring : {name , place } = props; functional
+                {name, place } = this.props; class
+
+Event handling : 
+                <buttton onClick={clickHandler}> click functional </button>
+                <buttton onClick={this.clickHandler}> click class </button>
+
+Binding Event handler : 
+                // bind the handler in render(), without bind this keyword is undefined, with bind this is eventBind{} object
+                // every update to the state cause reRender, genereate a brand new eventHandler on every render and if we build a large scale application it will cost you performance
+                <buttton onClick={this.clickHandler.bind(this)}> click class </button>
+
+                // using arrow function
+                <buttton onClick={ () => {this.clickHandler() }}> click class </button>
+                
+                // mostly used technique (binding happens once in class constructor,  better than using it in inside event call)
+                constructor(){
+                    this.clickHandler = this.clickHandler.bind(this)
+                }
+                <buttton onClick={this.clickHandler}> click class </button>
+
+                // using arrow function inside class(class propertie as arrow functions)
+                clickHandler = () =>{
+                    this.setState({
+                        message = "yo boi" ;
+                    })
+                }
+
+                use 3,4
+
+Methods as Props : 
+                // called from App
+                    <parentComponent /> 
+
+                // called parent
+                    //creates a method and bind in constructor
+                    // passed to childComponent & receiving parameters from childComponent
+                    greetParent(child){
+                        log(` {this.parentName} -> son: {this.child}`)
+                    } 
+                    <childComponent  greetHandler= {this.greetParent}/>    
+
+                // 'child' is passed as a parameter to greetHandler() which is present in parentComponent and we are calling it from childComponent, we can Destructure the props before using it 
+                function childComponent(props){
+                    return <button onClick = { () => props.greetHandler('child')}>Greet Parent</button>
+                }
+
+Conditional Rendering : 
+                if/else :(Inside render() )
+                if(this.state.isLoggedIn){
+                    return <div>Welcome {this.state.name}</div>
+                } else {
+                    return <div>Welcome Guest</div>
+                }
+
+
+                Element Variables :(Inside render() )
+                let message
+                if(this.state.isLoggedIn){
+                    message = <div>Welcome {this.state.name}</div>
+                } else {
+                    message = <div>Welcome Guest</div>
+                }
+                return <div>{message}</div>
+
+
+                Ternary Conditional operator : 
+                return {this.state.isLoggedIn} ? <div>Welcome {this.state.name}</div> : <div>Welcome Guest</div>
+
+                Short Circuit operator : (show if condition is true otherwise not)
+                return this.state.isLoggedIn &&  <div>Welcome {this.state.name}</div>
+
+List Rendering : 
+
+                
+Lists and Keys : Each child in an array or iterator should have a unique "key" prop.
+                 Key is unique attribute you need to include when you creating lists of elements(not accessable in child component)
+                 if you want to use use it as another prop
+
+Index as key Anti-pattern : 
+
+Styling  and css basics : 
+                        using external stylesheet ( this can be accessed in childrens)
+
+                        using style.module.css (this not)
+
+Basic Of form handling :(Controlled Component)
+                        
+                        when submit button is clicked html page refreshes (default behaviour)
+                        this behaviour can be changed by : event.preventDefault();
+
+                         // destructure (using this we dont have to write this.state every time)
+                        const {userName, comment, topic} = this.state
+
+Life Cycle Methods : whenever we create a react component it goes through several stages in its lifecycle
+                    React provide inbuilt methods which can be overwrite at particular stages in life cycle
+                    avalable methods for a class component :
+
+        Mounting : when an instance of a component is being created and inserted into the DOM 
+            order : constructor -> static getDerivedStateFromProps( props, state) (rarely used) -> render() -> componentDidMount() 
+            if a component has child then  after render of parent, execution of all the Mounting steps of child called then componentDidMount of parent
+
+        Updating : methods are called when component are being rerendered (changed), with the prop or state   
+
+        Unmounting : Dont call set state, component is never re render after it is Unmounted
+
+        Error Handling phase :
+
+Fragements : let you add child elements without adding extra nodes
+            when we create a component inside render we have return jsx in <div> if we are using more than one html element and if you inspect, inside root div we have that div and after that we have elements . So here div is extra node 
+            We can do 
+            <React.Fragment /> so it will dont take extra node
+
+            it can accept the key attribute when rendering lists of items Ex:
+            const items = []
+            {
+                items.map( item => (
+                    <React.Fragment key={item.id}>
+                    <h1>title</h1>
+                    <p>{item.title}</p>
+                    <React.Fragment />
+                ))
+            }
+
+        alternative : <> </> with this you cannot pass key
+
+Pure components :  2nd way creating class component (only works in class)
+                    we create a pure and regular component seperately,
+                    only reender , if current state is change compared to previous or props
+
+                    if we create parentComponent PureComponent then its child will also not re-render
+                    prevent unnecessary renders gives a performance boost
+
+                    and do not mutate object,array by pushing values because reference never changes and PureComponentonly check for reference so even if it is changed it wont rerender
+                    alwasy return new object,array when dealing with PureComponent
+
+Memo : memo works with function -> introduced in 16.6   (its a higher Order Component)
+
+Refs : to acces Dom directly using reference , use to focus element and much more 
